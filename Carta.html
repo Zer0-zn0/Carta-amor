@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Carta com Flor Mágica, Glitter e Música</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background: #fff0f5; overflow: hidden;
+      font-family: "Segoe UI", sans-serif;
+    }
+    .container {
+      position: relative; width: 420px; height: 400px;
+    }
+    .flower { width: 160px; height: 160px; position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      z-index: 5; cursor: pointer; transition: transform 0.6s ease;
+    }
+    .card {
+      width: 400px; height: 280px; background: #fff;
+      border: 2px solid #ff9ce4; border-radius: 18px;
+      box-shadow: 0 0 30px rgba(255,105,180,0.6);
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%) scale(0);
+      transition: transform 0.6s ease; z-index: 10; overflow: hidden;
+    }
+    .card.open { transform: translate(-50%,-50%) scale(1.05); }
+    .flap {
+      position: absolute; top:0; left:0; width:100%; height:140px;
+      background: linear-gradient(135deg,#ffb6d9,#ffccf2);
+      clip-path: polygon(0 0,100% 0,50% 100%);
+      z-index: 11; transform-origin: top; transition: transform 1s ease;
+    }
+    .card.open .flap { transform: rotateX(-180deg); }
+    .message {
+      position:absolute; top:140px; width:100%; height:140px;
+      padding:20px; box-sizing:border-box; text-align:center;
+      color:#444; opacity:0; transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s ease;
+      overflow-y:auto; z-index:9;
+    }
+    .card.open .message { opacity:1; transform: translateY(0); }
+    .message h3 { color:#cc2a96; margin-bottom:8px; }
+    .glitter { position:absolute; top:0; left:0;
+      width:100%; height:100%; pointer-events:none; z-index:15;
+    }
+    .sparkle {
+      position:absolute; background:white; width:8px; height:8px;
+      border-radius:50%; filter: drop-shadow(0 0 7px #fff);
+      animation: sparkle 0.6s infinite ease-in-out;
+    }
+    @keyframes sparkle {
+      0%,100%{transform:scale(1);opacity:1;}
+      50%{transform:scale(2);opacity:0.3;}
+    }
+    .hearts { position:fixed; top:0; left:0;
+      width:100vw; height:100vh; pointer-events:none; z-index:1;
+    }
+    .heart {
+      position:absolute; width:20px; height:20px; background:#ff4da6;
+      transform:rotate(45deg); opacity:0.9;
+      filter: drop-shadow(0 0 4px #ff66b3);
+      animation: float 5s linear infinite;
+    }
+    .heart::before, .heart::after {
+      content:''; position:absolute; width:20px; height:20px; background:#ff4da6; border-radius:50%;
+    }
+    .heart::before { top:-10px; left:0; }
+    .heart::after { left:-10px; top:0; }
+    @keyframes float {
+      0%{transform: translateY(120vh) rotate(45deg) scale(0.7);opacity:1;}
+      100%{transform: translateY(-150vh) rotate(90deg) scale(1.5);opacity:0;}
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+  <div class="glitter" id="glitter"></div>
+  <div class="container">
+    <svg class="flower" id="flower" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="10" fill="#f8a5c2"/>
+      <circle cx="32" cy="10" r="12" fill="#ffb6d9"/>
+      <circle cx="32" cy="54" r="12" fill="#ffb6d9"/>
+      <circle cx="10" cy="32" r="12" fill="#ffb6d9"/>
+      <circle cx="54" cy="32" r="12" fill="#ffb6d9"/>
+      <circle cx="17" cy="17" r="10" fill="#ffc1e3"/>
+      <circle cx="47" cy="17" r="10" fill="#ffc1e3"/>
+      <circle cx="17" cy="47" r="10" fill="#ffc1e3"/>
+      <circle cx="47" cy="47" r="10" fill="#ffc1e3"/>
+    </svg>
+
+   <div class="card" id="card">
+  <div class="flap"></div>
+  <div class="message">
+    <h3>Eu amo você, e sempre vou</h3>
+    <p>
+      Te ver é como aquele gole de café numa segunda nublada —<br>
+      quente, forte, necessário. <br><br>
+
+      Tem algo nos seus olhos que me desarma.<br>
+      Um tipo de calmaria bonita, que entra devagar<br>
+      e fica. Como se o mundo inteiro desacelerasse<br>
+      só pra eu te notar melhor.<br><br>
+
+      No outono, quando tudo parece estar se despedindo,<br>
+      você floresce. É a árvore que segura as folhas só<br>
+      pra balançar bonito no vento. É abrigo, é sombra boa.<br><br>
+
+      Às vezes me pego só... lembrando.<br>
+      Do som da sua risada, ou de imaginar você<br>
+      concentrada em algo simples, como prender o cabelo<br>
+      ou rir baixinho de alguma coisa que eu disse.<br><br>
+
+      Você tem essa luz bonita que não grita,<br>
+      mas insiste em ficar.<br><br>
+
+      E eu fico também.<br>
+      Fico aqui, entre palavras e memória, amando você<br>
+      de um jeito quieto, inteiro e leve —<br>
+      como uma carta guardada no peito.
+    </p>
+  </div>
+</div>
+
+  <audio id="musica" src="https://www.youtube.com/watch?v=AGgfFGrN88s"></audio>
+
+  <script>
+    const flower = document.getElementById('flower');
+    const card = document.getElementById('card');
+    const glitter = document.getElementById('glitter');
+    const heartsContainer = document.getElementById('hearts');
+    const musica = document.getElementById('musica');
+    flower.addEventListener('click', () => {
+      card.classList.toggle('open');
+      if (card.classList.contains('open')) {
+        showGlitter();
+        musica.play().catch(e => console.log('Toque manual requerido'));
+      } else {
+        glitter.innerHTML = '';
+        musica.pause(); musica.currentTime = 0;
+      }
+    });
+    function showGlitter() {
+      glitter.innerHTML = '';
+      for (let i = 0; i < 200; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        s.style.left = Math.random()*100 + '%';
+        s.style.top  = Math.random()*100 + '%';
+        s.style.animationDelay = Math.random() + 's';
+        glitter.appendChild(s);
+      }
+    }
+    function createHeart() {
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.style.left = Math.random()*100 + 'vw';
+      h.style.animationDuration = (4 + Math.random()*3) + 's';
+      heartsContainer.appendChild(h);
+      setTimeout(() => heartsContainer.removeChild(h), 7000);
+    }
+    setInterval(createHeart, 200);
+  </script>
+</body>
+</html>
